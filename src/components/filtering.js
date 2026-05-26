@@ -5,15 +5,15 @@ const compare = createComparison(defaultRules);
 
 export function initFiltering(elements, indexes) {
     // @todo: #4.1 — заполнить выпадающие списки опциями
-    Object.keys(indexes)                                    // Получаем ключи из объекта
-      .forEach((elementName) => {                        // Перебираем по именам
-        elements[elementName].append(                    // в каждый элемент добавляем опции
-            ...Object.values(indexes[elementName])        // формируем массив имён, значений опций
-                      .map(name => {                        // используйте name как значение и текстовое содержимое
+    Object.keys(indexes)                                    
+      .forEach((elementName) => {                        
+        elements[elementName].append(                    
+            ...Object.values(indexes[elementName])        
+                      .map(name => {                       
                         const newOption = document.createElement('option');
                         newOption.textContent = name;
                         newOption.value = name;
-                        return newOption;                               // @todo: создать и вернуть тег опции
+                        return newOption;                               
                       })
         )
      })
@@ -21,14 +21,25 @@ export function initFiltering(elements, indexes) {
     return (data, state, action) => {
         // @todo: #4.2 — обработать очистку поля
          if (action && action.name === 'clear') {
-            const parent = action.parentElement;
-            const input = parent?.querySelector('input', 'select');
             const field = action.dataset.field;
-            if (input) {
-                input.value = '';
-            }
-            if (field && field in state) {
-                state[field] = '';
+            
+            if (field) {
+                
+                const input = elements[field] || 
+                             document.querySelector(`[name="${field}"]`);
+                
+                if (input) {
+                    if (input.tagName === 'SELECT') {
+                        input.value = '';
+                    } else {
+                        input.value = '';
+                    }
+                }
+                
+                
+                if (field in state) {
+                    state[field] = '';
+                }
             }
         }
 
